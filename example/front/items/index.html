@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+    <title>
+    POS
+    </title>
+</head>
+
+<body>
+    <h1>商品マスター</h1>
+    <table>
+        <thead>
+            <td>ID</td><td>名前</td><td>バーコード</td>
+        </thead>
+        <tbody id="rows">
+
+        </tbody>
+    </table>
+
+    <script>
+        Window.onload=dank();
+
+        function dank(){
+            let tbody = document.getElementById("rows")
+            let req = new Request("/api/items", {
+                method: "GET",
+            });
+            fetch(req).then(response=>{
+                return response.json();
+            })
+            .then(function(items){
+                //console.log()
+                //let items = [{"id":1, "name":"aaa", "barcode":"1234"}]
+                items.forEach(item=>{
+                    let tr = document.createElement("tr")
+                    let td1 = document.createElement("td")
+                    td1.innerHTML = item.id
+                    let td2 = document.createElement("td")
+                    td2.innerHTML = item.name
+                    let td3 = document.createElement("td")
+                    td3.innerHTML = item.barcode
+                    tr.appendChild(td1)
+                    tr.appendChild(td2)
+                    tr.appendChild(td3)
+                    tbody.appendChild(tr)
+                })
+            })
+        }
+        // window.onload = functuon() {
+        //     document.getElementById("rows").append("<tr><td>hey<td></tr>")
+        // };
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+.DS_Store
+
+path
+
+test.txt.gz
+
+example/.DS_Store
+example/vendor
+
+example/weathermap/vendor
+example/weathermap/openweathermap.txt
