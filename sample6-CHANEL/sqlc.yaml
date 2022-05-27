@@ -1,0 +1,13 @@
+version: "1"
+packages:
+  - name: "db" # goのパッケージ名
+    path: "./db/sqlc" # sqlc格納
+    queries: "./db/query/" # query格納
+    schema: "./db/migration/" # スキーマー格納
+    engine: "postgresql" # DBタイプを洗濯
+    emit_json_tags: true # structにjsonのタグをつけるかいなか
+    emit_prepared_queries: false # preparedをサポートするか
+    emit_interface: false # Querierインターフェースを作るかどうか
+    emit_exact_table_names: false # 構造体名にテーブル名を反映させるかどうか(book tableの場合、Book structが作成される)
+    emit_empty_slices: false # manyクエリによって返却されるスライスは、nilでなく空にするか
+
