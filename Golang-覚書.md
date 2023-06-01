@@ -1,21 +1,26 @@
 # Golang 覚え書き
+
 go1.17以降、**go get**でのパッケージインストールが非推奨、代わりに**go install**を使うように。
 
 go get -u オプションの**-u**は新しいリリースまたはパッチリリースが利用可能な場合、パッケージとその依存パッケージをネットワークから更新する。使用しているパッケージを更新する際も使うことができる。Updateのuか。
 
 **importのアンダースコア** インポートするパッケージの関数は直接は使わないけど、依存関係によってインポートの必要があり、init()だけを実行する？
 
-$ go mod tidy  使われていない依存モジュールを削除する
+使われていない依存モジュールを削除する。 go.modファイルを整理するコマンド。
 
+	$ go mod tidy  
 
-## Semaphore(セマフォ)
+## 用語
+
+### Semaphore(セマフォ)
+
 同時実行を制御するための仕組み・手法
 
-## ガーベイジコレクション
+### ガーベイジコレクション
 
 コンピュータプログラムが動的に確保したメモリ領域のうち、不要になった領域を自動的に解放する機能。
 
-## JWT (JSON Web Token)
+### JWT (JSON Web Token)
 
 トークン内に情報を保持し、それを署名、暗号化することができる技術  
 つまり、署名を検証する事でユーザの認証が可能であり、内容に認可の情報を含める事で認証から認可まで行うことが可能になる。
@@ -25,57 +30,44 @@ $ go mod tidy  使われていない依存モジュールを削除する
 暗号鍵をJSONを使用して表現するための方法
 
 
-## ティッカー
+### ティッカー
 
 Linuxでいうcronのような機能
 
-## 慣用
+## 文法・慣用
 
-### アセンブリ
-
-$ otool -t -v -V mybinary > result.txt  <- MacOS
-$ readelf <- Linux
-$ go tool objdump main > objdump.txt
-
-### 型の調べ方
-	reflect.TypeOf(xxx)
-	
-### メソッド、構造体
 - 名前の先頭が大文字 -> 公開メソッド
 - 　　　　　　小文字 -> 非公開メソッド(privateになる)
 - メソッドチェーンはあまり使わない。なぜならerrorを返すのでif文で処理するため
 
-### パッケージ管理ツール
+### アセンブリ
 
-- dep
-- vgo
-
-とりあえずdepを使ってみた。(vgoは公式ツール)
-
-#### dep
-
-- dev version
-- dev init
+	$ otool -t -v -V mybinary > result.txt  <- MacOS
+	$ readelf <- Linux
+	$ go tool objdump main > objdump.txt
 
 ### Windows用にコンパイル（クロスコンパイル）
 
-`# GOOS=windows GOARCH=amd64 go build main.go`
+	`# GOOS=windows GOARCH=amd64 go build main.go`
 
 Linux, MacOSX に**file**というコマンドがあるのを知った。
 ファイルのメタ情報を表示できる。
 
 クロスコンパイル時に指定する環境変数(GOOS, GOARCH)へ指定できる値の確認コマンド
-`# go tool dist list`
 
-## Webフレームワーク
-- gin
+	`# go tool dist list`
+
+## Webフレームワークの種類
+
+- [gin](https://gin-gonic.com/ja/)
 - echo
 - gorilla/mux
 - Beego (これを使う)
-- FastAPI (これも使いたい)
+- FastAPI (これも使いたい, Python用だった)
 - [Fiber](https://docs.gofiber.io/extra/benchmarks)
 
 ## 変数定義
+
 ### 普通の変数
 1. var <変数名> <型>
 2. <変数名> := <初期値>
@@ -101,10 +93,18 @@ Numpy(Python)のスライスと使い方は同じ？ではなく、大きさを�
 	const big = 0xFFFFFF
 	
 ### 型を調べる
+
 	reflect.TypeOf(XXX)
 
+### Print関係
 
-## 関数定義
+とりあえず2つ覚えよう。
+
+	fmt.Printf("%d ", i)
+	fmt.Println("Hello")
+
+## 関数定義例
+
 ### 2つの引数、2つの戻り値の場合
 	func myFunc(name string, age uint) (bool, error) {
 	    var find bool
@@ -112,9 +112,24 @@ Numpy(Python)のスライスと使い方は同じ？ではなく、大きさを�
 	    return find, error
 	}
 ### 値だけど内部はポインタっぽいのはそのまま渡す
+
 	slice, map, chan, func,等
 	
-## メソッド
+## 構造体、メソッド
+
+	type 名称 型 {
+		名前 型
+		名前 型
+		名前 型
+	}
+
+### 要素にアクセス
+
+ドットでアクセスする。
+
+	var 変数 名称
+	名称.名前
+
 **レシーバ**と呼称。関数の前にレシーバを記述する形でメソッドを宣言できる。
 
 	func (p Calc) Add() {
@@ -132,9 +147,22 @@ Calc型構造体をレシーバpとして受け取る
 	    return p.atai1 + p.atai2
 	}
 
+ポインタ型はあるがポインタ演算は無い。
 
-## Golang特有の if の書き方
+### 辞書型
+
+#### キーがstring型で値がインターフェース型のマップ
+
+	dic := make(map[string]interface{})
+	dic["a"] = 7
+	dic["b"] = true
+	dic["c"] = "Hello"
+	fmt.Printf("%#v\n", dic)
+
+## Golang特有の **if** の書き方
+
 ### if <変数> := <処理>; <変数がtrue or falseにより処理>
+
 	func myTest() bool {
 		...
 	}
@@ -145,25 +173,13 @@ Calc型構造体をレシーバpとして受け取る
 		}
 	}
 
-## 構造体
-	type 名称 型 {
-		名前 型
-		名前 型
-		名前 型
-	}
-
-### 要素にアクセス
-ドットでアクセスする。
-
-	var 変数 名称
-	名称.名前
-
-### ※足し算、掛け算などに注意あり
 
 ## 関数その他
+
 - import( os, fmt), fmt.Fprintf(os.Stterr, "err '%s'", err)
 
 ## 今後は
+
 - interface
 - channel
 - context
@@ -171,22 +187,76 @@ Calc型構造体をレシーバpとして受け取る
 などを勉強すると良い。
 goroutineは並列処理を実装
 
-ポインタ型はあるがポインタ演算は無い。
-
 [A Tour of Go](https://go-tour-jp.appspot.com/list)をまずは１周。
 
 ## interface
-interface型は、メソッドのシグニチャ(用法？)の集まり
+
+Interface型は、メソッドのシグニチャの集まり(シグニチャ：署名。プログラミングの分野では、関数やメソッドの名前、引数の数やデータ型、返り値の型などの組み合わせのこと)
+
+Interfaceはメソッドの集合・塊。型定義をゆるくしたい時などに使用
+（Pythonの時勉強した） factorymethodのようなものか？
+
+2つの使い方（結局は同じことをしている、らしい）
+
+1. 何でも入る型
+2. 関数を集めたもの
 
 	type Abser interface {
 		Abs() float64
 	}
+
 
 ## Goroutines
 
 	go f(x, y, z)
 	
 と書けば新しい**goroutine (並列処理)**が実行される
+
+**メイン**ゴルーチンが終わったら、他スレッド？のゴルーチンの終了を待たずにプログラム全体が終わる。
+
+### チャネル(Channel)
+
+特定の型の値を送信・受信する事で（異なるゴールーチンで）並行に実行している関数がやり取りする機構を手起居している。
+チャネル演算子 **<-**
+
+	ch <- v // vをチャネルchへ送信する
+	v := <-ch // chから受信した変数をvへ割り当てる
+	
+#### チャネルの生成
+
+	ch := make(chan int)
+
+通常、片方が準備できるまで送受信はブロックされる。これにより、明確なロックや条件変数がなくても、goroutineの同期を可能にする。
+
+	package main
+	
+	import "fmt"
+	
+	func sum(s []int, c chan int) {
+		sum := 0
+		for _, v := range s {
+			sum += v
+		}
+		c <- sum // send sum to c
+	}
+	
+	func main() {
+		s := []int{7, 2, 8, -9, 4, 0}
+		
+		c := make(chan int)
+		go sum(s[:len(s)/2], c)
+		go sum(s[len(s)/2], c)
+		x, y := <-c, <- c // receive from c
+		
+		fmt.Println(x, y, x+y)
+	}
+
+## Context
+
+Ginでもよく出てくるContext
+
+> Contextはginのフレームワークの中でも最も重要な部品の一つです。  
+gin.Contextを使うことで、ミドルウェア間での変数の受け渡しや、処理の管理、JSONリクエストのバリデーション、JSONレスポンスの出力等が可能になります。
 
 ## Emacs
 ### No Windowモードで起動
@@ -209,7 +279,8 @@ interface型は、メソッドのシグニチャ(用法？)の集まり
 
 Golang界隈では有名
 
-Protcol Buffer
+#### Protcol Buffer
+
   gRPCとを実現するためのシリアライズフォーマット。.protoファイルに記述する。
   
 ## github開発のやりかた
@@ -248,58 +319,11 @@ Protcol Buffer
 10. git diff 変更したファイル内容を確認
 11. git branch ブランチの一覧表示
 
-## Go routine
-
-メインゴールーチンが終わったら、他スレッド？のゴールーチンの終了を待たずにプログラム全体が終わる。
-
-### チャネル(Channel)
-特定の型の値を送信・受信する事で（異なるゴールーチンで）並行に実行している関数がやり取りする機構を手起居している。
-チャネル演算子 **<-**
-
-	ch <- v // vをチャネルchへ送信する
-	v := <-ch // chから受信した変数をvへ割り当てる
-	
-#### チャネルの生成
-
-	ch := make(chan int)
-
-通常、片方が準備できるまで送受信はブロックされる。これにより、明確なロックや条件変数がなくても、goroutineの同期を可能にする。
-
-	package main
-	
-	import "fmt"
-	
-	func sum(s []int, c chan int) {
-		sum := 0
-		for _, v := range s {
-			sum += v
-		}
-		c <- sum // send sum to c
-	}
-	
-	func main() {
-		s := []int{7, 2, 8, -9, 4, 0}
-		
-		c := make(chan int)
-		go sum(s[:len(s)/2], c)
-		go sum(s[len(s)/2:, c)
-		x, y := <-c, <- c // receive from c
-		
-		fmt.Println(x, y, x+y)
-	}
 
 ## Redis
 
 Key-Valueで値が保存されるNoSQLデータベース  
 常にメモリにデータが乗るため、メモリ容量しか扱えない、ゆえにメモリの消費が激しい。
-
-
-## プログラミング基本構文
-
-### 変数と定数
-### データ型
-### 関数
-### 制御構文
 
 ## Heroku + Docker
 

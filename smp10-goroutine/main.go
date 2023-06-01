@@ -23,7 +23,7 @@ func main() {
 	c := make(chan int) // チャネルを作成
 	go getLuckyNum(c)
 
-	num := <-c // チャネルから返り血を受信
+	num := <-c // チャネルから返り値を受信
 
 	fmt.Printf("Today's your lucky number is %d!\n", num)
 	close(c)
