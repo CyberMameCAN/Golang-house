@@ -8,7 +8,12 @@ go get -u オプションの**-u**は新しいリリースまたはパッチリ�
 
 使われていない依存モジュールを削除する。 go.modファイルを整理するコマンド。
 
-	$ go mod tidy  
+	$ go mod tidy
+
+go.modファイルに記載されたすべてのモジュールをダウンロードする。
+
+	$ go mod download
+
 
 ## 用語
 
@@ -158,6 +163,10 @@ Calc型構造体をレシーバpとして受け取る
 	dic["b"] = true
 	dic["c"] = "Hello"
 	fmt.Printf("%#v\n", dic)
+
+変数宣言時に初期化
+
+	dic2 := map[string]interface{}{"a": "hello", "b": false}
 
 ## Golang特有の **if** の書き方
 
